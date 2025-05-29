@@ -5,10 +5,28 @@ AOS.init({
     offset: 100
 });
 
+// Scroll to Top Button
+const scrollToTopBtn = document.getElementById('scrollToTop');
+
+// Show/hide button based on scroll position
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+        scrollToTopBtn.classList.add('visible');
+    } else {
+        scrollToTopBtn.classList.remove('visible');
+    }
+});
+
+// Scroll to top when button is clicked
+scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
 // Enhanced Navigation
 const navbar = document.querySelector('.navbar');
-const menuToggle = document.querySelector('.menu-toggle');
-const navLinks = document.querySelector('.nav-links');
 
 // Navbar scroll effect
 window.addEventListener('scroll', () => {
@@ -19,28 +37,18 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Mobile menu toggle with animation
-menuToggle.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-    menuToggle.classList.toggle('active');
-});
-
-// Close mobile menu when clicking outside
-document.addEventListener('click', (e) => {
-    if (!menuToggle.contains(e.target) && !navLinks.contains(e.target)) {
-        navLinks.classList.remove('active');
-        menuToggle.classList.remove('active');
-    }
-});
-
 // Enhanced smooth scroll for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        navLinks.classList.remove('active');
-        menuToggle.classList.remove('active');
-
-        const target = document.querySelector(this.getAttribute('href'));
+        const href = this.getAttribute('href');
+        
+        // Skip if href is just "#"
+        if (href === '#') return;
+        
+        const target = document.querySelector(href);
+        if (!target) return; // Skip if target element not found
+        
         const headerOffset = 80;
         const elementPosition = target.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -229,6 +237,15 @@ moreReviewsBtn.addEventListener('click', () => {
 
 // Testimonial Scroll Animation
 const testimonialSection = document.querySelector('.testimonials');
+const testimonialCards = document.querySelectorAll('.testimonial-card');
+
+// Initialize testimonial cards with initial state
+testimonialCards.forEach(card => {
+    card.style.transform = 'translateY(20px)';
+    card.style.opacity = '0';
+    card.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+});
+
 const testimonialObserver = new IntersectionObserver(
     (entries) => {
         entries.forEach(entry => {
